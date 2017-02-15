@@ -23,7 +23,8 @@
         "psr-4": {
             "Application\\": "module/Application/src/",
             "Album\\": "module/Album/src/",
-            "Blog\\": "module/Blog/src/"
+            "Blog\\": "module/Blog/src/",
+            "Legal\\": "module/Legal/src/"
         }
     },
     "autoload-dev": {
@@ -41,7 +42,7 @@
         "post-create-project-cmd": [
             "@development-enable"
         ],
-        "serve": "php -S 0.0.0.0:8080 -t public/ public/index.php",
+        "serve": "php -S 0.0.0.0:9080 -t public/ public/index.php",
         "test": "phpunit"
     },
     "require-dev": {

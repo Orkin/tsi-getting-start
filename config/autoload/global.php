@@ -16,6 +16,6 @@ return [
         'driver' => 'Pdo',
         'dsn'    => 'mysql:dbname=album;host=localhost',
         'username' => 'root',
-        'password' => '',
+        'password' => 'tsi',
     ],
 ];

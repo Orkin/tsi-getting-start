@@ -8,6 +8,7 @@
 namespace Application;
 
 use Album\Controller\AlbumController;
+use Application\Controller\IndexController;
 use Zend\Router\Http\Literal;
 use Zend\Router\Http\Segment;
 use Zend\ServiceManager\Factory\InvokableFactory;

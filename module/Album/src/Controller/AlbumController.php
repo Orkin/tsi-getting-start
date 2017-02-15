@@ -19,10 +19,11 @@ use Zend\View\Model\ViewModel;
 
 class AlbumController extends AbstractActionController
 {
-    // Add this property:
+    /**
+     * @var AlbumTable
+     */
     private $table;
 
-    // Add this constructor:
     public function __construct(AlbumTable $table)
     {
         $this->table = $table;
