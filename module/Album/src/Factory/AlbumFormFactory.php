@@ -1,8 +1,8 @@
 <?php
 /**
  * User: orkin
- * Date: 13/02/2017
- * Time: 17:23
+ * Date: 16/02/2017
+ * Time: 11:22
  */
 declare(strict_types = 1);
 
@@ -10,16 +10,14 @@ declare(strict_types = 1);
 namespace Album\Factory;
 
 
-use Album\Controller\AlbumController;
 use Album\Form\AlbumForm;
-use Album\Model\AlbumTable;
 use Interop\Container\ContainerInterface;
 use Interop\Container\Exception\ContainerException;
 use Zend\ServiceManager\Exception\ServiceNotCreatedException;
 use Zend\ServiceManager\Exception\ServiceNotFoundException;
 use Zend\ServiceManager\Factory\FactoryInterface;
 
-class AlbumControllerFactory implements FactoryInterface
+class AlbumFormFactory implements FactoryInterface
 {
 
     /**
@@ -37,11 +35,6 @@ class AlbumControllerFactory implements FactoryInterface
      */
     public function __invoke(ContainerInterface $container, $requestedName, array $options = null)
     {
-        /** @var AlbumTable $albumTable */
-        $albumTable = $container->get(AlbumTable::class);
-        /** @var AlbumForm $albumForm */
-        $albumForm = $container->get('FormElementManager')->get(AlbumForm::class);
-
-        return new AlbumController($albumTable, $albumForm);
+        return new AlbumForm();
     }
 }

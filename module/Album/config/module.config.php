@@ -5,8 +5,10 @@ namespace Album;
 
 use Album\Controller\AlbumController;
 use Album\Factory\AlbumControllerFactory;
+use Album\Factory\AlbumFormFactory;
 use Album\Factory\AlbumTableFactory;
 use Album\Factory\AlbumTableGatewayFactory;
+use Album\Form\AlbumForm;
 use Album\Model\AlbumTable;
 use Zend\Router\Http\Segment;
 
@@ -34,6 +36,10 @@ return [
                 ],
             ],
         ],
+    ],
+
+    'form_elements' => [
+        AlbumForm::class => AlbumFormFactory::class,
     ],
 
     'service_manager' => [
