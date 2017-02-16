@@ -26,15 +26,11 @@ class LegalController extends AbstractActionController
 
     public function legalAction()
     {
-        $lang = $this->params()->fromRoute('lang');
-        
         return new ViewModel();
     }
 
     public function cguAction()
     {
-        $lang = $this->params()->fromRoute('lang');
-
         return new ViewModel();
     }
 
