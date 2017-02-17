@@ -15,6 +15,8 @@ return [
     'Zend\Db',
     'Zend\Router',
     'Zend\Validator',
+    'DoctrineModule',
+    'DoctrineORMModule',
     'ZendDeveloperTools',
     'Application',
     'Album',

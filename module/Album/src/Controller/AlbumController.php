@@ -10,114 +10,112 @@ declare(strict_types = 1);
 namespace Album\Controller;
 
 
-use Album\Form\AlbumForm;
+use Album\Form\AddAlbumForm;
 use Album\Model\Album;
-use Album\Model\AlbumTable;
+use Album\Service\AlbumServiceInterface;
 use Zend\Http\PhpEnvironment\Request;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
 
 class AlbumController extends AbstractActionController
 {
-    /**
-     * @var AlbumTable
-     */
-    private $table;
 
     /**
-     * @var AlbumForm
+     * @var AlbumServiceInterface
+     */
+    private $albumService;
+
+    /**
+     * @var AddAlbumForm
      */
     private $albumForm;
 
     /**
      * AlbumController constructor.
      *
-     * @param AlbumTable $table
-     * @param AlbumForm  $albumForm
+     * @param AlbumServiceInterface $albumService
+     * @param AddAlbumForm          $albumForm
      */
-    public function __construct(AlbumTable $table, AlbumForm $albumForm)
+    public function __construct(AlbumServiceInterface $albumService, AddAlbumForm $albumForm)
     {
-        $this->table     = $table;
-        $this->albumForm = $albumForm;
+        $this->albumService = $albumService;
+        $this->albumForm    = $albumForm;
     }
 
     public function indexAction()
     {
         return new ViewModel(
             [
-                'albums' => $this->table->fetchAll(),
+                'albums' => $this->albumService->getAllAlbums(),
             ]
         );
     }
 
     public function addAction()
     {
-        $this->albumForm->get('submit')->setValue('Add');
-
         /** @var Request $request */
         $request = $this->getRequest();
 
-        if (!$request->isPost()) {
-            return ['form' => $this->albumForm];
+        if ($request->isPost()) {
+            $this->albumForm->setData($request->getPost());
+
+            if ($this->albumForm->isValid()) {
+                /** @var Album $album */
+                $album = $this->albumForm->getData();
+                $this->albumService->create($album);
+
+                return $this->redirect()->toRoute('album');
+            }
         }
 
-        $album = new Album();
-        $this->albumForm->setData($request->getPost());
-
-        if (!$this->albumForm->isValid()) {
-            return ['form' => $this->albumForm];
-        }
-
-        $album->exchangeArray($this->albumForm->getData());
-        $this->table->saveAlbum($album);
-
-        return $this->redirect()->toRoute('album');
+        return new ViewModel(
+            [
+                'form' => $this->albumForm,
+            ]
+        );
     }
 
     public function editAction()
     {
-        $id = (int)$this->params()->fromRoute('id', 0);
+        $albumId = (int)$this->params()->fromRoute('id');
+        $album   = $this->albumService->getAlbumById($albumId);
 
-        if (0 === $id) {
-            return $this->redirect()->toRoute('album', ['action' => 'add']);
-        }
-
-        // Retrieve the album with the specified id. Doing so raises
-        // an exception if the album is not found, which should result
-        // in redirecting to the landing page.
-        try {
-            $album = $this->table->getAlbum($id);
-        } catch (\Exception $e) {
-            return $this->redirect()->toRoute('album', ['action' => 'index']);
+        if (!$album) {
+            return $this->redirect()->toRoute('album');
         }
 
         $this->albumForm->bind($album);
-        $this->albumForm->get('submit')->setAttribute('value', 'Edit');
 
         /** @var Request $request */
-        $request  = $this->getRequest();
-        $viewData = ['id' => $id, 'form' => $this->albumForm];
+        $request = $this->getRequest();
 
-        if (!$request->isPost()) {
-            return $viewData;
+        if ($request->isPost()) {
+            $this->albumForm->setData($request->getPost());
+
+            if ($this->albumForm->isValid()) {
+                /** @var Album $album */
+                $album = $this->albumForm->getData();
+
+                $this->albumService->edit($album);
+
+                return $this->redirect()->toRoute('album');
+            }
         }
 
-        $this->albumForm->setData($request->getPost());
-
-        if (!$this->albumForm->isValid()) {
-            return $viewData;
-        }
-
-        $this->table->saveAlbum($album);
-
-        // Redirect to album list
-        return $this->redirect()->toRoute('album', ['action' => 'index']);
+        return new ViewModel(
+            [
+                'form' => $this->albumForm,
+                'id'   => $album->getId(),
+            ]
+        );
     }
 
     public function deleteAction()
     {
-        $id = (int)$this->params()->fromRoute('id', 0);
-        if (0 === $id) {
+        $albumId = (int)$this->params()->fromRoute('id');
+        $album   = $this->albumService->getAlbumById($albumId);
+
+        if (!$album) {
             return $this->redirect()->toRoute('album');
         }
 
@@ -127,17 +125,15 @@ class AlbumController extends AbstractActionController
             $del = $request->getPost('del', 'No');
 
             if ($del == 'Yes') {
-                $id = (int)$request->getPost('id');
-                $this->table->deleteAlbum($id);
+                $this->albumService->delete($album);
             }
 
-            // Redirect to list of albums
             return $this->redirect()->toRoute('album');
         }
 
         return [
-            'id'    => $id,
-            'album' => $this->table->getAlbum($id),
+            'id'    => $albumId,
+            'album' => $album,
         ];
     }
 }

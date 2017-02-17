@@ -6,12 +6,12 @@ $this->headTitle($title);
     <h1><?= $this->escapeHtml($title) ?></h1>
 <?php
 /** @var \Zend\Form\Form $album */
-$album = $this->form->get('title');
+$album = $this->form->get('album')->get('title');
 $album->setAttribute('class', 'form-control');
 $album->setAttribute('placeholder', 'Album title');
 
 /** @var \Zend\Form\Form $artist */
-$artist = $this->form->get('artist');
+$artist = $this->form->get('album')->get('artist');
 $artist->setAttribute('class', 'form-control');
 $artist->setAttribute('placeholder', 'Artist');
 
@@ -45,5 +45,5 @@ echo $this->form()->openTag($this->form);
 
 <?php
 echo $this->formSubmit($submit);
-echo $this->formHidden($form->get('id'));
+echo $this->formHidden($this->form->get('album')->get('id'));
 echo $this->form()->closeTag();

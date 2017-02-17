@@ -14,12 +14,13 @@ $this->headTitle($title);
         <th>&nbsp;</th>
     </tr>
     <?php foreach ($this->albums as $album) : ?>
+        <?php /** @var \Album\Model\Album $album */ ?>
         <tr>
-            <td><?= $this->escapeHtml($album->title) ?></td>
-            <td><?= $this->escapeHtml($album->artist) ?></td>
+            <td><?= $this->escapeHtml($album->getTitle()) ?></td>
+            <td><?= $this->escapeHtml($album->getArtist()) ?></td>
             <td>
-                <a href="<?= $this->url('album', ['action' => 'edit', 'id' => $album->id]) ?>">Edit</a>
-                <a href="<?= $this->url('album', ['action' => 'delete', 'id' => $album->id]) ?>">Delete</a>
+                <a href="<?= $this->url('album', ['action' => 'edit', 'id' => $album->getId()]) ?>">Edit</a>
+                <a href="<?= $this->url('album', ['action' => 'delete', 'id' => $album->getId()]) ?>">Delete</a>
             </td>
         </tr>
     <?php endforeach; ?>

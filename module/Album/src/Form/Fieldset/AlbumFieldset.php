@@ -1,36 +1,50 @@
 <?php
 /**
  * User: orkin
- * Date: 15/02/2017
- * Time: 10:08
+ * Date: 16/02/2017
+ * Time: 15:49
  */
 declare(strict_types = 1);
 
 
-namespace Album\Form;
-
+namespace Album\Form\Fieldset;
 
 use Album\Model\Album;
+use Doctrine\ORM\EntityManager;
 use Zend\Filter\StringToUpper;
 use Zend\Filter\StringTrim;
 use Zend\Filter\StripTags;
 use Zend\Filter\ToInt;
-use Zend\Form\Element;
-use Zend\Form\Form;
+use Zend\Form\Fieldset;
 use Zend\InputFilter\InputFilterProviderInterface;
+use DoctrineModule\Stdlib\Hydrator\DoctrineObject;
+use Zend\Form\Element;
 use Zend\Validator\StringLength;
 
-class AlbumForm extends Form implements InputFilterProviderInterface
+class AlbumFieldset extends Fieldset implements InputFilterProviderInterface
 {
 
-    public function __construct($name = null)
+    /**
+     * @var EntityManager
+     */
+    private $objectManager;
+
+    /**
+     * ClientFieldset constructor.
+     *
+     * @param EntityManager $objectManager
+     */
+    public function __construct(EntityManager $objectManager)
     {
-        // We will ignore the name provided to the constructor
-        parent::__construct('album');
+        $this->objectManager = $objectManager;
+        parent::__construct();
     }
 
     public function init()
     {
+        $this->setHydrator(new DoctrineObject($this->objectManager))
+             ->setObject(new Album());
+
         $this->add(
             [
                 'name' => 'id',
@@ -52,16 +66,6 @@ class AlbumForm extends Form implements InputFilterProviderInterface
                 'type'    => Element\Text::class,
                 'options' => [
                     'label' => 'Artist',
-                ],
-            ]
-        );
-        $this->add(
-            [
-                'name'       => 'submit',
-                'type'       => Element\Submit::class,
-                'attributes' => [
-                    'value' => 'Go',
-                    'id'    => 'submitbutton',
                 ],
             ]
         );
@@ -124,3 +128,4 @@ class AlbumForm extends Form implements InputFilterProviderInterface
         ];
     }
 }
+

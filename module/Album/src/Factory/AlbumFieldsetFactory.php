@@ -1,8 +1,8 @@
 <?php
 /**
  * User: orkin
- * Date: 13/02/2017
- * Time: 17:23
+ * Date: 16/02/2017
+ * Time: 16:18
  */
 declare(strict_types = 1);
 
@@ -10,16 +10,15 @@ declare(strict_types = 1);
 namespace Album\Factory;
 
 
-use Album\Controller\AlbumController;
-use Album\Form\AddAlbumForm;
-use Album\Service\AlbumService;
+use Album\Form\Fieldset\AlbumFieldset;
+use Doctrine\ORM\EntityManager;
 use Interop\Container\ContainerInterface;
 use Interop\Container\Exception\ContainerException;
 use Zend\ServiceManager\Exception\ServiceNotCreatedException;
 use Zend\ServiceManager\Exception\ServiceNotFoundException;
 use Zend\ServiceManager\Factory\FactoryInterface;
 
-class AlbumControllerFactory implements FactoryInterface
+class AlbumFieldsetFactory implements FactoryInterface
 {
 
     /**
@@ -37,11 +36,9 @@ class AlbumControllerFactory implements FactoryInterface
      */
     public function __invoke(ContainerInterface $container, $requestedName, array $options = null)
     {
-        /** @var AlbumService $albumService */
-        $albumService = $container->get(AlbumService::class);
-        /** @var AddAlbumForm $albumForm */
-        $albumForm = $container->get('FormElementManager')->get(AddAlbumForm::class);
+        /** @var EntityManager $entityManager */
+        $entityManager = $container->get(EntityManager::class);
 
-        return new AlbumController($albumService, $albumForm);
+        return new AlbumFieldset($entityManager);
     }
 }

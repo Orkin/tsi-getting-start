@@ -18,4 +18,32 @@ return [
         'username' => 'root',
         'password' => 'tsi',
     ],
+
+    'doctrine'        => [
+        'connection'     => [
+            'orm_default' => [
+                'driverClass' => \Doctrine\DBAL\Driver\PDOMySql\Driver::class,
+                'params'      => [
+                    'host'          => 'localhost',
+                    'user'          => 'root',
+                    'password'      => '',
+                    'dbname'        => 'album',
+                    'charset'       => 'utf8',
+                    'driverOptions' => [
+                        1002 => 'SET NAMES utf8'
+                    ]
+                ],
+            ]
+        ],
+
+        'configuration'  => [
+            'orm_default' => [
+                'generate_proxies'   => true,
+                'metadata_cache'     => 'array',
+                'query_cache'        => 'array',
+                'result_cache'       => 'array',
+                'hydration_cache'    => 'array',
+            ]
+        ]
+    ]
 ];
