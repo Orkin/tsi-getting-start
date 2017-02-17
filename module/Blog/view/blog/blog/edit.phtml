@@ -1,0 +1,59 @@
+<?php
+
+$title = 'Edit blog';
+$this->headTitle($title);
+?>
+    <h1><?= $this->escapeHtml($title) ?></h1>
+<?php
+/** @var \Zend\Form\Form $blog */
+$blog = $this->form->get('blog')->get('title');
+$blog->setAttribute('class', 'form-control');
+$blog->setAttribute('placeholder', 'blog title');
+
+/** @var \Zend\Form\Form $text */
+$text = $this->form->get('blog')->get('text');
+$text->setAttribute('class', 'form-control');
+$text->setAttribute('placeholder', 'Text');
+
+/** @var \Zend\Form\Form $album */
+$album = $this->form->get('blog')->get('album');
+$album->setAttribute('class', 'form-control');
+
+/** @var \Zend\Form\Form $submit */
+$submit = $this->form->get('submit');
+$submit->setAttribute('class', 'btn btn-primary');
+
+$this->form->setAttribute(
+    'action', $this->url(
+    'blog', [
+        'action' => 'edit',
+        'id'     => $this->id,
+    ]
+)
+);
+$this->form->prepare();
+
+echo $this->form()->openTag($this->form);
+?>
+    <div class="form-group">
+        <?= $this->formLabel($blog) ?>
+        <?= $this->formElement($blog) ?>
+        <?= $this->formElementErrors()->render($blog, ['class' => 'help-block']) ?>
+    </div>
+
+    <div class="form-group">
+        <?= $this->formLabel($text) ?>
+        <?= $this->formElement($text) ?>
+        <?= $this->formElementErrors()->render($text, ['class' => 'help-block']) ?>
+    </div>
+
+    <div class="form-group">
+        <?= $this->formLabel($album) ?>
+        <?= $this->formElement($album) ?>
+        <?= $this->formElementErrors()->render($album, ['class' => 'help-block']) ?>
+    </div>
+
+<?php
+echo $this->formSubmit($submit);
+echo $this->formHidden($this->form->get('blog')->get('id'));
+echo $this->form()->closeTag();

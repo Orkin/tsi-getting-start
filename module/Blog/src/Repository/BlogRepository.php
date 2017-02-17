@@ -7,36 +7,37 @@
 declare(strict_types = 1);
 
 
-namespace Album\Repository;
+namespace Blog\Repository;
 
 
-use Album\Model\Album;
+use Blog\Model\Blog;
 use Doctrine\ORM\EntityRepository;
 
-class AlbumRepository extends EntityRepository
+class BlogRepository extends EntityRepository
 {
 
     /**
      * @param int $id
      *
-     * @return Album|null
+     * @return Blog|null
      */
     public function findOneById(int $id)
     {
-        $qb = $this->createQueryBuilder('a')
-                   ->andWhere('a.id = :id')
+        $qb = $this->createQueryBuilder('b')
+                   ->andWhere('b.id = :id')
                    ->setParameter('id', $id);
 
         return $qb->getQuery()->getOneOrNullResult();
     }
 
     /**
-     * @return Album[]
+     * @return array
      */
-    public function getAllAlbums()
+    public function findAll()
     {
-        $qb = $this->createQueryBuilder('a')
-                   ->addOrderBy('a.title', 'ASC');
+        $qb = $this->createQueryBuilder('b')
+                   ->addSelect('a')
+                   ->leftJoin('b.album', 'a');
 
         return $qb->getQuery()->getResult();
     }
