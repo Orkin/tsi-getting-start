@@ -24,9 +24,21 @@ class AlbumController extends AbstractActionController
      */
     private $table;
 
-    public function __construct(AlbumTable $table)
+    /**
+     * @var AlbumForm
+     */
+    private $albumForm;
+
+    /**
+     * AlbumController constructor.
+     *
+     * @param AlbumTable $table
+     * @param AlbumForm  $albumForm
+     */
+    public function __construct(AlbumTable $table, AlbumForm $albumForm)
     {
-        $this->table = $table;
+        $this->table     = $table;
+        $this->albumForm = $albumForm;
     }
 
     public function indexAction()
@@ -40,25 +52,23 @@ class AlbumController extends AbstractActionController
 
     public function addAction()
     {
-        $form = new AlbumForm();
-        $form->get('submit')->setValue('Add');
+        $this->albumForm->get('submit')->setValue('Add');
 
         /** @var Request $request */
         $request = $this->getRequest();
 
         if (!$request->isPost()) {
-            return ['form' => $form];
+            return ['form' => $this->albumForm];
         }
 
         $album = new Album();
-        $form->setInputFilter($album->getInputFilter());
-        $form->setData($request->getPost());
+        $this->albumForm->setData($request->getPost());
 
-        if (!$form->isValid()) {
-            return ['form' => $form];
+        if (!$this->albumForm->isValid()) {
+            return ['form' => $this->albumForm];
         }
 
-        $album->exchangeArray($form->getData());
+        $album->exchangeArray($this->albumForm->getData());
         $this->table->saveAlbum($album);
 
         return $this->redirect()->toRoute('album');
@@ -66,7 +76,7 @@ class AlbumController extends AbstractActionController
 
     public function editAction()
     {
-        $id = (int) $this->params()->fromRoute('id', 0);
+        $id = (int)$this->params()->fromRoute('id', 0);
 
         if (0 === $id) {
             return $this->redirect()->toRoute('album', ['action' => 'add']);
@@ -81,22 +91,20 @@ class AlbumController extends AbstractActionController
             return $this->redirect()->toRoute('album', ['action' => 'index']);
         }
 
-        $form = new AlbumForm();
-        $form->bind($album);
-        $form->get('submit')->setAttribute('value', 'Edit');
+        $this->albumForm->bind($album);
+        $this->albumForm->get('submit')->setAttribute('value', 'Edit');
 
         /** @var Request $request */
         $request  = $this->getRequest();
-        $viewData = ['id' => $id, 'form' => $form];
+        $viewData = ['id' => $id, 'form' => $this->albumForm];
 
         if (!$request->isPost()) {
             return $viewData;
         }
 
-        $form->setInputFilter($album->getInputFilter());
-        $form->setData($request->getPost());
+        $this->albumForm->setData($request->getPost());
 
-        if (!$form->isValid()) {
+        if (!$this->albumForm->isValid()) {
             return $viewData;
         }
 
